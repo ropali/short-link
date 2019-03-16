@@ -5,6 +5,8 @@ import {
     CardPanel
  } from 'react-materialize'
 
+import UrlInput from './UrlInput'
+
 class UrlShrotWidget extends Component {
   constructor(props) {
     super(props);
@@ -14,8 +16,8 @@ class UrlShrotWidget extends Component {
     return (
       <Row className="center-align">
         <Col s={12} m={12}>
-          <CardPanel className="black-text">
-            
+          <CardPanel className="black-text bg-primary">
+            <UrlInput/>
           </CardPanel>
         </Col>
         

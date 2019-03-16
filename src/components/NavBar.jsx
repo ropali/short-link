@@ -11,7 +11,7 @@ class NavBar extends Component {
   }
   render() {
     return (
-      <Navbar className="primary-color" style={{ paddingLeft:'20px' }} brand="Short Link!" right>
+      <Navbar className="bg-primary" style={{ paddingLeft:'20px' }} brand="Short Link!" right>
         <NavItem href="#!">
           <Icon>search</Icon>
         </NavItem>

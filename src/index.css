@@ -3,6 +3,30 @@ body{
   margin: 0
 }
 
-.primary-color{
+.bg-primary{
   background-color: #38435A
 }
+
+.Title{
+  color: white
+}
+
+#url-input{
+  border: 1px solid white;
+  background-color: white;
+  padding-left: 3px;
+  font-size: 1.5rem
+}
+
+#url-input:focus{
+  box-shadow: -4px 6px 5px -2px black;
+}
+
+#url-input::placeholder{
+  padding-left: 3px;
+  font-size: 1rem;
+  font-style: italic
+
+}
+
+
