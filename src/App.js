@@ -1,13 +1,16 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
 
+import NavBar from "./components/NavBar";
+import UrlShortWidget from "./components/UrlShortWidget";
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        My URL Shortner
-      </div>
+      <React.Fragment>
+        <NavBar />
+        <div className="container">
+          <UrlShortWidget />
+        </div>
+      </React.Fragment>
     );
   }
 }
