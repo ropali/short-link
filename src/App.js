@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
-import NavBar from "./components/NavBar";
+import NavBar from "./components/layouts/NavBar";
 import UrlShortWidget from "./components/UrlShortWidget";
-import CustomerFooter from './components/CustomFooter'
+import CustomerFooter from './components/layouts/CustomFooter'
 class App extends Component {
   render() {
     return (

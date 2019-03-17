@@ -2,18 +2,20 @@ import React, { Component } from "react";
 import { Button } from "react-materialize";
 import Icon from "react-materialize/lib/Icon";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import Snackbar from './Snackbar';
+
+const initialState = {
+  inputUrl: "",
+  shorten: false,
+  errors: {
+    inputUrl: ""
+  },
+  copied: false
+}
 
 class UrlInput extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      inputUrl: "",
-      errors: {
-        inputUrl: ""
-      },
-      copied: false
-    };
+    this.state = initialState
   }
 
   onChange = e => {
@@ -29,56 +31,84 @@ class UrlInput extends Component {
     });
   };
 
-  copyToClipboard = () => {};
-
   shortUrl = () => {
-    const baseShortUrl = "https://short-link/";
+    const baseShortUrl = "https://short-link.com/";
     const url = this.state.inputUrl;
-    if (url !== "") {
-      this.setState({ inputUrl: baseShortUrl + generateString() });
+    if (url !== "" && this.isValidURL(url)) {
+      this.setState({
+        inputUrl: baseShortUrl + generateString(),
+        shorten: true,
+        errors: { inputUrl: "" }
+      });
+      
+    } else if (!this.isValidURL(url) && url !== "") {
+      this.setState({ errors: { inputUrl: "Invalid URL!" } });
+      
     }
-    
   };
 
+  onCopy = () => {
+    this.setState({ copied: true })
+    window.Materialize.toast('Copied to your clipboard!', 3000)
+  }
+
+  resetState = () => {
+    this.setState(initialState)
+  }
+
   isValidURL = url => {
-    var re = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/; // /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+    var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
     return re.test(url);
   };
 
   render() {
-    const { inputUrl, errors } = this.state;
+    const { inputUrl, errors, shorten } = this.state;
     return (
       <div className="Wrapper">
         <h3 className="Title">Short Your URLS Here!</h3>
         <div className="Input">
-          <div style={{ display: "flex" }}>
+          <div>
+            {errors.inputUrl != "" && (
+              <label className="error" htmlFor="inputUrl">
+                { errors.inputUrl }
+              </label>
+            )}
             <input
               name="inputUrl"
               value={inputUrl}
               type="text"
               id="url-input"
-              className={errors.inputUrl == "" ? "my-input" : "error"}
+              className="my-input"
               placeholder="Ex. https://www.google.com"
               onChange={this.onChange}
               onClick={this.getClipboardData}
             />
-            <CopyToClipboard
-              text={this.state.inputUrl}
-              onCopy={() => this.setState({ copied: true })}
-            >
-              <Button style={style.copyBtn} onClick={this.copyToClipboard}>
-                <Icon style={style.copyIcon}>filter_none</Icon>
-              </Button>
-            </CopyToClipboard>
           </div>
-          <Button onClick={this.shortUrl} waves="light">
-            Short It!
-          </Button>
-        </div>
-        <Snackbar text="URL Copeied To Your Clipboard" show={ this.state.copied } />
-      </div>
+          {!shorten && (
+            <Button onClick={this.shortUrl} waves="light">
+              Short It!
+            </Button>
+          )}
 
-      
+          {shorten && (
+            <React.Fragment>
+              <CopyToClipboard
+                text={this.state.inputUrl}
+                onCopy={this.copyToClipboard}
+              >
+                <Button style={style.copyBtn} onClick={this.onCopy}>
+                  <Icon>filter_none</Icon>
+                  {/* Copy! */}
+                </Button>
+              </CopyToClipboard>
+              <Button style={style.copyBtn} onClick={this.resetState} >
+                <Icon>refresh</Icon>
+              </Button>
+            </React.Fragment>
+          )}
+        </div>
+        
+      </div>
     );
   }
 }
@@ -95,8 +125,7 @@ function generateString() {
 
 const style = {
   copyBtn: {
-    height: "48px",
-    border: "1px solid #2BBBAD"
+    marginLeft: 10
   },
   copyIcon: {
     marginTop: "4px"
