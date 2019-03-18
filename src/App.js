@@ -1,18 +1,23 @@
 import React, { Component } from "react";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 import NavBar from "./components/layouts/NavBar";
 import UrlShortWidget from "./components/UrlShortWidget";
-import CustomerFooter from './components/layouts/CustomFooter'
+import About from "./components/pages/About"
+import CustomerFooter from "./components/layouts/CustomFooter";
 class App extends Component {
   render() {
     return (
-      <React.Fragment>
-        <NavBar />
-        <div className="container">
-          <UrlShortWidget />
-        </div>
-        <CustomerFooter/>
-      </React.Fragment>
+      <Router>
+        <React.Fragment>
+          <NavBar />
+          <div className="container">
+            <Route exact path="/" component={ UrlShortWidget } />
+            <Route exact path="/about" component={ About } />
+          </div>
+          <CustomerFooter />
+        </React.Fragment>
+      </Router>
     );
   }
 }

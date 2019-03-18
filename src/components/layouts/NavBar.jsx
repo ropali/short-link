@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { Navbar, NavItem
-  
-} from "react-materialize";
-import Icon from 'react-materialize/lib/Icon'
+import { Link, Redirect } from 'react-router-dom'
+import { Navbar, NavItem } from "react-materialize";
+import Icon from "react-materialize/lib/Icon";
 
 class NavBar extends Component {
   constructor(props) {
@@ -11,21 +10,20 @@ class NavBar extends Component {
   }
   render() {
     return (
-      <Navbar className="bg-primary" style={{ paddingLeft:'20px' }} brand="Short Link!" right>
+      <Navbar
+        className="bg-primary"
+        style={{ paddingLeft: "20px" }}
+        brand="Short Link!"
+        right
+      >
         <NavItem href="#!">
           <Icon>search</Icon>
         </NavItem>
-        <NavItem href="#!">
-          <Icon>view_module</Icon>
+        <NavItem href="#!" onClick={ ()=> (<Redirect to="/"/>) } >
+          <Icon>home</Icon>
         </NavItem>
-        <NavItem href="#!">
-          <Icon>autorenew</Icon>
-          
-        </NavItem>
-        
-        <NavItem href="#!">
-          Login
-        </NavItem>
+        <NavItem href="/login"><Link to="/login">Login</Link></NavItem>
+        <NavItem href="/login"><Link to="/about">About</Link></NavItem>
       </Navbar>
     );
   }
