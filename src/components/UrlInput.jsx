@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button } from "react-materialize";
+import { Button, Preloader } from "react-materialize";
 import Icon from "react-materialize/lib/Icon";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
@@ -88,6 +88,7 @@ class UrlInput extends Component {
             <Button onClick={this.shortUrl} waves="light">
               Short It!
             </Button>
+            
           )}
 
           {shorten && (
@@ -98,7 +99,7 @@ class UrlInput extends Component {
               >
                 <Button style={style.copyBtn} onClick={this.onCopy}>
                   <Icon>filter_none</Icon>
-                  {/* Copy! */}
+                  
                 </Button>
               </CopyToClipboard>
               <Button style={style.copyBtn} onClick={this.resetState} >
