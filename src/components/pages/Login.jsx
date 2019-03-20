@@ -11,7 +11,21 @@ class Login extends Component {
     }
   };
 
+  constructor(props){
+    super(props);
+    this.emailInputRef = React.createRef();
+    this.passwordInputRef = React.createRef();
+  }
+
+  onChange = (ref) => {
+    console.log(ref);
+    
+  }
   
+  login = () => {
+    console.log(this.emailInputRef.state.value);
+    
+  }
 
   render() {
     return (
@@ -27,7 +41,7 @@ class Login extends Component {
               className="error"
               label="Email"
               validate
-              
+              ref={ref => this.emailInputRef = ref}
             >
               <Icon>account_circle</Icon>
             </Input>
@@ -40,11 +54,11 @@ class Login extends Component {
               label="Password"
               validate
               type="password"
-              
+              ref={ref => this.passwordInputRef = ref}
             >
               <Icon>lock</Icon>
             </Input>
-            <Button style={{ marginTop: "20px" }} waves="yellow">
+            <Button onClick={ this.login } style={{ marginTop: "20px" }} waves="yellow">
               Login
             </Button>
           </Col>
