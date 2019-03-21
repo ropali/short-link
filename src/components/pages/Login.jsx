@@ -3,8 +3,6 @@ import { Row, Col, Input, Icon, CardPanel, Button } from "react-materialize";
 
 class Login extends Component {
   state = {
-    name:"",
-    password: "",
     errors: {
         name: "",
         password: ""
@@ -17,18 +15,29 @@ class Login extends Component {
     this.passwordInputRef = React.createRef();
   }
 
-  onChange = (ref) => {
-    console.log(ref);
-    
-  }
   
   login = () => {
-    console.log(this.emailInputRef.state.value);
+    const email = this.emailInputRef.state.value;
+    const password = this.passwordInputRef.state.value;
+    console.log(email);
+    
+    if (typeof password != "undefined" && password.length < 6) {
+      this.setState({ errors: { password: "Password length must be atleast 6 characters!" } })
+    }
+
+    if (typeof email != "undefined") {
+      if (!validateEmail(email)) {
+        this.setState({ errors: { email: "Invalid email address!" } })
+      }
+    }
+    
     
   }
 
   render() {
+    const { errors } = this.state;
     return (
+     
       <CardPanel className="bg-primary" style={{ padding: "20px 5%" }}>
         <Row class="login">
           <h1 style={{ color: "white" }}>Login</h1>
@@ -37,7 +46,7 @@ class Login extends Component {
               s={12}
               m={12}
               name="email"
-              error=""
+              error={errors.email}
               className="error"
               label="Email"
               validate
@@ -50,7 +59,7 @@ class Login extends Component {
               s={12}
               m={12}
               name="password"
-              error=""
+              error={ errors.password }
               label="Password"
               validate
               type="password"
@@ -66,6 +75,17 @@ class Login extends Component {
       </CardPanel>
     );
   }
+}
+
+function validateEmail(sEmail) {
+  const reEmail = /^(?:[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+\.)*[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+@(?:(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!\.)){0,61}[a-zA-Z0-9]?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!$)){0,61}[a-zA-Z0-9]?)|(?:\[(?:(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\]))$/;
+
+  if (sEmail !== "") return false;
+
+  if(!sEmail.match(reEmail)) {
+    return false;
+  }
+  return true;
 }
 
 export default Login;

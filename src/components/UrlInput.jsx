@@ -9,13 +9,14 @@ const initialState = {
   errors: {
     inputUrl: ""
   },
-  copied: false
-}
+  copied: false,
+  shorting: false
+};
 
 class UrlInput extends Component {
   constructor(props) {
     super(props);
-    this.state = initialState
+    this.state = initialState;
   }
 
   onChange = e => {
@@ -32,29 +33,38 @@ class UrlInput extends Component {
   };
 
   shortUrl = () => {
-    const baseShortUrl = "https://short-link.com/";
-    const url = this.state.inputUrl;
-    if (url !== "" && this.isValidURL(url)) {
-      this.setState({
-        inputUrl: baseShortUrl + generateString(),
-        shorten: true,
-        errors: { inputUrl: "" }
-      });
-      
-    } else if (!this.isValidURL(url) && url !== "") {
-      this.setState({ errors: { inputUrl: "Invalid URL!" } });
-      
+
+    if (this.state.inputUrl.length) {
+      this.setState({ shorting: true })
+
+      setTimeout(() => {
+        const baseShortUrl = "https://short-link.com/";
+        const url = this.state.inputUrl;
+        if (url !== "" && this.isValidURL(url)) {
+          this.setState({
+            inputUrl: baseShortUrl + generateString(),
+            shorten: true,
+            errors: { inputUrl: "" }
+          });
+        } else if (!this.isValidURL(url) && url !== "") {
+          this.setState({ errors: { inputUrl: "Invalid URL!" } });
+        }
+  
+      }, 2000);
     }
+    
+
   };
 
   onCopy = () => {
-    this.setState({ copied: true })
-    window.Materialize.toast('Copied to your clipboard!', 3000)
-  }
+    
+    this.setState({ copied: true });
+    window.Materialize.toast("Copied to your clipboard!", 3000);
+  };
 
   resetState = () => {
-    this.setState(initialState)
-  }
+    this.setState(initialState);
+  };
 
   isValidURL = url => {
     var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
@@ -62,7 +72,7 @@ class UrlInput extends Component {
   };
 
   render() {
-    const { inputUrl, errors, shorten } = this.state;
+    const { inputUrl, errors, shorten, shorting } = this.state;
     return (
       <div className="Wrapper">
         <h3 className="Title">Short Your URLS Here!</h3>
@@ -70,7 +80,7 @@ class UrlInput extends Component {
           <div>
             {errors.inputUrl != "" && (
               <label className="error" htmlFor="inputUrl">
-                { errors.inputUrl }
+                {errors.inputUrl}
               </label>
             )}
             <input
@@ -84,12 +94,14 @@ class UrlInput extends Component {
               onClick={this.getClipboardData}
             />
           </div>
-          {!shorten && (
-            <Button onClick={this.shortUrl} waves="light">
-              Short It!
-            </Button>
-            
-          )}
+          {!shorten &&
+            (shorting ? (
+              <Preloader flashing size="small" />
+            ) : (
+              <Button onClick={this.shortUrl} waves="light">
+                Short It!
+              </Button>
+            ))}
 
           {shorten && (
             <React.Fragment>
@@ -99,16 +111,14 @@ class UrlInput extends Component {
               >
                 <Button style={style.copyBtn} onClick={this.onCopy}>
                   <Icon>filter_none</Icon>
-                  
                 </Button>
               </CopyToClipboard>
-              <Button style={style.copyBtn} onClick={this.resetState} >
+              <Button style={style.copyBtn} onClick={this.resetState}>
                 <Icon>refresh</Icon>
               </Button>
             </React.Fragment>
           )}
         </div>
-        
       </div>
     );
   }

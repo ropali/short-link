@@ -5,7 +5,7 @@ import NavBar from "./components/layouts/NavBar";
 import UrlShortWidget from "./components/UrlShortWidget";
 import About from "./components/pages/About"
 import Login from "./components/pages/Login"
-import CustomerFooter from "./components/layouts/CustomFooter";
+import CustomFooter from "./components/layouts/CustomFooter";
 
 class App extends Component {
   render() {
@@ -18,7 +18,7 @@ class App extends Component {
             <Route exact path="/about" component={ About } />
             <Route exact path="/login" component={ Login } />
           </div>
-          <CustomerFooter />
+          <CustomFooter />
         </React.Fragment>
       </Router>
     );
