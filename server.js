@@ -28,7 +28,7 @@ mongoose
   .catch(err => console.error(err));
 
 // Use routes
-app.use("/api", apiRoute);
+app.use("/", apiRoute);
 
 // Start listening
 app.listen(port, () => console.log("Server started at port " + port));

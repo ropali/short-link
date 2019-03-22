@@ -8,10 +8,9 @@ const ShortUrls = require("../../models/ShortUrls");
 // get base URL
 const baseUrl = config.baseUrl;
 
-// router.use(bodyParser.json())
 
 router.get("/", (req, res, next) => {
-  res.send("Welcome to Short Link!");
+  res.json({'msg': "Welcome to Short Link!"});
 });
 
 /**
@@ -19,32 +18,43 @@ router.get("/", (req, res, next) => {
  * @desc Short a given URL
  * @access public
  */
-router.post("/short", (req, res, next) => {
+router.post("/api/short", (req, res, next) => {
   if (isEmpty(req.body)) {
     res
       .status(400)
       .json({ success: false, msg: "Data missing!", data: req.body });
   }
 
-  // Generate a URL code
-  const urlCode = generateRandomString()//getCodeForUrl();
-
   const shortUrl = new ShortUrls({
     url: req.body.url,
-    urlCode: urlCode,
     userid: req.body.userid
   });
 
-  shortUrl.save(err => {
-    if (err) {
-      res.status(400).json({ success: true, msg: err });
-    }
-
-    res.status(400).json({ success: true, url: baseUrl + urlCode });
-  });
+  saveShortUrl(shortUrl, res)
 });
 
-function getCodeForUrl() {
+
+router.get('/:id', (req, res, next) => {
+  const urlCode = req.param("id")
+
+  ShortUrls.findOne({ urlCode: urlCode }, (err, urlObj) => {
+    if (err) {
+      console.log(err)
+
+      res.status(500).json({'success': false,'msg': 'Internal Server Error!'})
+    }
+
+    if (isEmpty(urlObj)) {
+      res.status(404).json({'success': false,'msg': 'URL does not exist!'})
+    }
+
+    // Redirect to actual URL
+    res.redirect(urlObj.url)
+  })
+
+})
+
+function saveShortUrl(shortUlrObj, res) {
   // Generate a random string to replace the url
   let randomStr = generateRandomString();
   // Check if the random string already exist in DB
@@ -53,12 +63,25 @@ function getCodeForUrl() {
       console.log(err);
     } else if (url == null || isEmpty(url)) {
       console.log("url obj", url, randomStr);
-      return randomStr;
+
+      shortUlrObj.urlCode = randomStr
+      
+      // Not a duplicate
+      shortUlrObj.save(err => {
+        if (err) {
+          res.status(400).json({ success: true, msg: err });
+        }
+        res.status(400).json({ success: true, url: baseUrl + randomStr });
+      });
+
     } else {
-      getCodeForUrl();
+      // Generate random string already exist in the DB
+      // Try once again
+      saveShortUrl(shortUlrObj)
     }
   });
 }
+
 
 function generateRandomString() {
   var length = 6,
