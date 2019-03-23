@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const apiRoute = require("./routes/api/main");
+const cors = require('cors')
 
 const config = require("./config/config");
 
@@ -10,11 +11,8 @@ const port = process.env.PORT || 5000;
 
 const app = express();
 
-// create application/json parser
-// var jsonParser = bodyParser.json()
- 
-// create application/x-www-form-urlencoded parser
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+// Enable cors
+app.use(cors())
 
 // Set BodyParser middleware
 app.use(bodyParser.json());

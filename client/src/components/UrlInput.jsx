@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import { Button, Preloader } from "react-materialize";
 import Icon from "react-materialize/lib/Icon";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import axios from 'axios'
+
+// Setup axios porxy
+axios.defaults.baseURL = "http://localhost:5000"
 
 const initialState = {
   inputUrl: "",
@@ -33,24 +37,31 @@ class UrlInput extends Component {
   };
 
   shortUrl = () => {
+    const { inputUrl } = this.state
 
-    if (this.state.inputUrl.length) {
+    if (inputUrl.length > 0) {
       this.setState({ shorting: true })
 
-      setTimeout(() => {
-        const baseShortUrl = "https://short-link.com/";
-        const url = this.state.inputUrl;
-        if (url !== "" && this.isValidURL(url)) {
-          this.setState({
-            inputUrl: baseShortUrl + generateString(),
+      axios.post('/api/short', {
+        url: inputUrl
+      })
+      .then((response) => {
+        console.log(response);
+        const data = response.data
+        if (data.success == true) {
+          // Set the state
+          this.setState({ 
+            inputUrl: data.url,
             shorten: true,
             errors: { inputUrl: "" }
-          });
-        } else if (!this.isValidURL(url) && url !== "") {
-          this.setState({ errors: { inputUrl: "Invalid URL!" } });
+          })
         }
-  
-      }, 2000);
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      
     }
     
 
@@ -124,15 +135,7 @@ class UrlInput extends Component {
   }
 }
 
-function generateString() {
-  var length = 6,
-    charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-    retVal = "";
-  for (var i = 0, n = charset.length; i < length; ++i) {
-    retVal += charset.charAt(Math.floor(Math.random() * n));
-  }
-  return retVal;
-}
+
 
 const style = {
   copyBtn: {

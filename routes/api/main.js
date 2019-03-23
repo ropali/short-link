@@ -35,7 +35,7 @@ router.post("/api/short", (req, res, next) => {
 
 
 router.get('/:id', (req, res, next) => {
-  const urlCode = req.param("id")
+  const urlCode = req.params.id
 
   ShortUrls.findOne({ urlCode: urlCode }, (err, urlObj) => {
     if (err) {
@@ -71,7 +71,7 @@ function saveShortUrl(shortUlrObj, res) {
         if (err) {
           res.status(400).json({ success: true, msg: err });
         }
-        res.status(400).json({ success: true, url: baseUrl + randomStr });
+        res.status(200).json({ success: true, url: baseUrl + randomStr });
       });
 
     } else {
