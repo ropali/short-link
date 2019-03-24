@@ -5,7 +5,8 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import axios from 'axios'
 
 // Setup axios porxy
-axios.defaults.baseURL = "http://localhost:5000"
+// axios.defaults.baseURL = "http://localhost:5000"
+axios.defaults.baseURL = "https://shortlink-app.herokuapp.com/"
 
 const initialState = {
   inputUrl: "",

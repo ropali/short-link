@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const apiRoute = require("./routes/api/main");
 const cors = require('cors')
-
+const path = require('path')
 const config = require("./config/config");
 
 // Set up port
@@ -27,6 +27,14 @@ mongoose
 
 // Use routes
 app.use("/", apiRoute);
+
+// Serve the static assets if in the prodcution 
+if(process.env.NODE_ENV === "production" ) {
+  // Set static folder
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+  })
+}
 
 // Start listening
 app.listen(port, () => console.log("Server started at port " + port));
