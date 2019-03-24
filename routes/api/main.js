@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const config = require("../../config/config");
 const bodyParser = require("body-parser");
+require('dotenv').config()
 
 const ShortUrls = require("../../models/ShortUrls");
 
 // get base URL
-const baseUrl = config.baseUrl;
+const baseUrl = process.env.BASE_URL;
 
 
 router.get("/", (req, res, next) => {

@@ -4,7 +4,8 @@ const bodyParser = require("body-parser");
 const apiRoute = require("./routes/api/main");
 const cors = require('cors')
 const path = require('path')
-const config = require("./config/config");
+// const config = require("./config/config");
+require('dotenv').config()
 
 // Set up port
 const port = process.env.PORT || 5000;
@@ -18,7 +19,8 @@ app.use(cors())
 app.use(bodyParser.json());
 
 // DB conection
-const dbURL = config.mongoDBUrl;
+// const dbURL = config.mongoDBUrl;
+const dbURL = process.env.MONGODB_URL
 
 mongoose
   .connect(dbURL, { useNewUrlParser: true })
