@@ -8,6 +8,7 @@ const UrlShrotWidget = () => {
     <Row className="center-align">
       <Col s={12} m={12}>
         <CardPanel className="black-text bg-primary">
+          <h3 className="Title">Short Your URLS Here!</h3>
           <UrlInput />
         </CardPanel>
       </Col>
