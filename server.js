@@ -30,13 +30,14 @@ app.use(express.static(path.join(__dirname, 'client', 'build')))
 // Use routes
 app.use("/", apiRoute);
 
+// Set static folder
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'))
+})
 // Serve the static assets if in the prodcution 
-if(process.env.NODE_ENV === "production" ) {
-  // Set static folder
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'))
-  })
-}
+// if(process.env.NODE_ENV === "production" ) {
+  
+// }
 
 // Start listening
 app.listen(port, () => console.log("Server started at port " + port));
