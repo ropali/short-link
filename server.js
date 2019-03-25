@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const apiRoute = require("./routes/api/main");
+const userRoute = require('./routes/api/users')
 const cors = require("cors");
 const path = require("path");
 // const config = require("./config/config");
@@ -30,7 +31,11 @@ mongoose
 app.use(express.static(path.join(__dirname, "client", "build")));
 
 // Use routes
+app.use("/api/users", userRoute);
+
 app.use("/", apiRoute);
+
+
 
 // Serve the static assets if in the prodcution
 if (process.env.NODE_ENV === "production") {
