@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 require("dotenv").config();
 const User = require("../../models/User");
+const ShortUrls = require("../../models/ShortUrls");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
@@ -68,27 +69,22 @@ router.post("/login", (req, res, next) => {
 
   User.findOne({ email: email })
     .then(user => {
-      console.log(user);
       if (user === null) {
-        res
-          .status(200)
-          .json({
-            success: false,
-            msg: "User with this email does not exist!"
-          });
+        res.status(200).json({
+          success: false,
+          msg: "User with this email does not exist!"
+        });
       }
 
-      const data = { id: user._id, name: user.name, email: user.email }
+      const data = { userid: user._id, name: user.name, email: user.email };
       // generate jwt token it send that as response
-      const token = jwt.sign(data, process.env.SECRET_KEY)
+      const token = jwt.sign(data, process.env.SECRET_KEY);
 
-      res
-        .status(200)
-        .json({
-          success: true,
-          msg: "user logged in",
-          data: { token }
-        });
+      res.status(200).json({
+        success: true,
+        msg: "user logged in",
+        data: { token }
+      });
     })
     .catch(err => {
       console.log(err);
@@ -101,17 +97,24 @@ router.post("/login", (req, res, next) => {
  * @access private
  * @desc user dashboard
  */
-router.get('/dashboard', (req, res, next) => {
-    const token = req.body.token
+router.get("/dashboard", (req, res, next) => {
+  const token = req.header("Authorization");
 
-    jwt.verify(token, process.env.SECRET_KEY, (err, payload) => {
-        if (err) {
-            console.log(err);
-        }
-        res.status(200).json(payload)
-    })
-})
+  jwt.verify(token, process.env.SECRET_KEY, (err, payload) => {
+    if (err) {
+      res.status(200).json({ success: false,error: err.message  });
+      return;
+    }
 
+    ShortUrls.find({ userid: payload.userid })
+      .then(urls => {
+        res.status(200).json({ success: true, data: urls });
+      })
+      .catch(err => {
+        res.status(200).json({ success: false, error: err });
+      });
+  });
+});
 
 function toUpperCaseWords(str) {
   return str

@@ -68,8 +68,7 @@ class UrlInput extends Component {
 
   };
 
-  onCopy = () => {
-    
+  onCopy = () => { 
     this.setState({ copied: true });
     window.Materialize.toast("Copied to your clipboard!", 3000);
   };

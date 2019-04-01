@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Row, Col, Input, Icon, CardPanel, Button } from "react-materialize";
+import axios from 'axios'
 
 class Login extends Component {
   state = {
@@ -19,7 +20,6 @@ class Login extends Component {
   login = () => {
     const email = this.emailInputRef.state.value;
     const password = this.passwordInputRef.state.value;
-    console.log(email);
     
     if (typeof password != "undefined" && password.length < 6) {
       this.setState({ errors: { password: "Password length must be atleast 6 characters!" } })
@@ -31,6 +31,22 @@ class Login extends Component {
       }
     }
     
+    if (this.state.errors.email === "" && this.state.errors.password === "") {
+      console.log('api called');
+      
+      axios.post('/api/users/login', {
+        'email':email,
+        'password': password
+      })
+      .then(response => {
+        console.log(response.data.data.token);
+        
+      })
+      .catch(err => {
+        console.log(err);
+        
+      })
+    }
     
   }
 
@@ -86,6 +102,11 @@ function validateEmail(sEmail) {
     return false;
   }
   return true;
+}
+
+function isEmpty(obj) {
+  if (obj == null) return true;
+  return Object.entries(obj).length === 0 && obj.constructor === Object;
 }
 
 export default Login;
