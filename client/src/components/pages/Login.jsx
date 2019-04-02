@@ -24,14 +24,27 @@ class Login extends Component {
     if (typeof password != "undefined" && password.length < 6) {
       this.setState({ errors: { password: "Password length must be atleast 6 characters!" } })
     }
+    else {
+      this.setState({ errors: { password: "" } })
+    }
 
     if (typeof email != "undefined") {
       if (!validateEmail(email)) {
+        console.log('invalid email');
+        
         this.setState({ errors: { email: "Invalid email address!" } })
       }
+      else {
+        this.setState({ errors: { email: "" } })
+      }
+    }
+    else {
+      this.setState({ errors: { email: "Invalid email address!" } })
     }
     
-    if (this.state.errors.email === "" && this.state.errors.password === "") {
+    console.log(this.state.errors);
+    
+    if ((email !== "" || typeof email !== "undefined" ) && (password !== "" || typeof password !== "undefined")) {
       console.log('api called');
       
       axios.post('/api/users/login', {
@@ -65,7 +78,7 @@ class Login extends Component {
               error={errors.email}
               className="error"
               label="Email"
-              validate
+              
               ref={ref => this.emailInputRef = ref}
             >
               <Icon>account_circle</Icon>
@@ -77,7 +90,7 @@ class Login extends Component {
               name="password"
               error={ errors.password }
               label="Password"
-              validate
+              
               type="password"
               ref={ref => this.passwordInputRef = ref}
             >
@@ -96,12 +109,9 @@ class Login extends Component {
 function validateEmail(sEmail) {
   const reEmail = /^(?:[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+\.)*[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+@(?:(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!\.)){0,61}[a-zA-Z0-9]?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!$)){0,61}[a-zA-Z0-9]?)|(?:\[(?:(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\]))$/
 
-  if (sEmail !== "") return false;
+  if (sEmail === "") return false;
 
-  if(!sEmail.match(reEmail)) {
-    return false;
-  }
-  return true;
+  return reEmail.test(sEmail);
 }
 
 function isEmpty(obj) {

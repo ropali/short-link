@@ -45,7 +45,7 @@ router.post("/signup", (req, res, next) => {
     .then(user => {
       res
         .status(200)
-        .json({ success: true, msg: "User created successfully!", data: user });
+        .json({ success: true, msg: "User created successfully!" });
     })
     .catch(err => {
       res.status(200).json({ success: false, msg: "Internal Server Error!" });

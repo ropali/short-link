@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Row, Col, Input, Icon, CardPanel, Button } from "react-materialize";
+import axios from 'axios'
 
 class Signup extends Component {
   state = {
@@ -18,22 +19,27 @@ class Signup extends Component {
     this.nameInputRef = React.createRef();
   }
 
-  login = () => {
+  signup = () => {
+    const name = this.nameInputRef.state.value;
     const email = this.emailInputRef.state.value;
     const password = this.passwordInputRef.state.value;
-    console.log(email);
+    const confirm_password = this.confirmPasswordInputRef.state.value
 
-    if (typeof password != "undefined" && password.length < 6) {
-      this.setState({
-        errors: { password: "Password length must be atleast 6 characters!" }
-      });
-    }
+    // TODO : validate fields before submit
 
-    if (typeof email != "undefined") {
-      if (!validateEmail(email)) {
-        this.setState({ errors: { email: "Invalid email address!" } });
-      }
-    }
+    axios.post('/api/users/signup', {
+      name,
+      email,
+      password,
+      confirm_password
+    })
+    .then( res => {
+      console.log(res.data);
+      
+    })
+    .catch(err => {
+      console.log(err)
+    })
   };
 
   render() {
@@ -95,7 +101,7 @@ class Signup extends Component {
           </Col>
 
           <Button
-              onClick={this.login}
+              onClick={this.signup}
               style={{ marginTop: "20px" }}
               waves="yellow"
             >
