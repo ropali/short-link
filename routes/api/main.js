@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 require('dotenv').config()
 
-const ShortUrls = require("../../models/ShortUrls").default;
+const ShortUrls = require("../../models/ShortUrls");
 
 // get base URL
 const baseUrl = process.env.BASE_URL;
@@ -35,7 +35,7 @@ router.post("/api/short", (req, res, next) => {
 
 router.get('/:id', (req, res, next) => {
   const urlCode = req.params.id
-
+  
   ShortUrls.findOne({ urlCode: urlCode }, (err, urlObj) => {
     if (err) {
       console.log(err)
@@ -47,8 +47,23 @@ router.get('/:id', (req, res, next) => {
       res.status(404).json({'success': false,'msg': 'URL does not exist!'})
     }
 
-    // Redirect to actual URL
-    res.redirect(urlObj.url)
+    const redirectTo = urlObj.url;
+
+    // Update the hits counter of url
+    ShortUrls.updateOne({ urlCode: urlCode }, { $inc: { 'hits': 1 } }, (err, model) => {
+      
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log(urlObj);
+      
+      // Redirect to actual URL
+      res.redirect(redirectTo)
+
+    })
+
+    
   })
 
 })

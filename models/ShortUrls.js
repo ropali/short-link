@@ -13,6 +13,10 @@ const ShortUrlsSchema = new Schema({
     userid: {
         type: String
     },
+    hits: {
+        type: Number,
+        default: 0
+    },
     createdDate: {
         type: Date,
         default: Date.now

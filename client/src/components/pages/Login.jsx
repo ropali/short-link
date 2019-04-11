@@ -42,7 +42,7 @@ class Login extends Component {
       this.setState({ errors: { email: "Invalid email address!" } })
     }
     
-    console.log(this.state.errors);
+    // console.log(this.state.errors);
     
     if ((email !== "" || typeof email !== "undefined" ) && (password !== "" || typeof password !== "undefined")) {
       console.log('api called');
@@ -68,7 +68,7 @@ class Login extends Component {
     return (
      
       <CardPanel className="bg-primary" style={{ padding: "20px 5%" }}>
-        <Row class="login">
+        <Row className="login">
           <h1 style={{ color: "white" }}>Login</h1>
           <Col s={12} m={12}>
             <Input
