@@ -12,6 +12,19 @@ router.get("/", (req, res, next) => {
   res.json({'msg': "Welcome to Short Link!"});
 });
 
+
+/**
+ * @route POST api/dashboard
+ * @desc Short a given URL
+ * @access public
+ */
+// router.get("/api/dashboard/:id", (req, res, next) => {
+
+  
+
+  
+// });
+
 /**
  * @route POST api/short
  * @desc Short a given URL
@@ -67,6 +80,8 @@ router.get('/:id', (req, res, next) => {
   })
 
 })
+
+
 
 function saveShortUrl(shortUlrObj, res) {
   // Generate a random string to replace the url

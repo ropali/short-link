@@ -107,8 +107,10 @@ router.get("/dashboard", (req, res, next) => {
     }
 
     ShortUrls.find({ userid: payload.userid })
-      .then(urls => {
-        res.status(200).json({ success: true, data: urls });
+      .then(data => {
+        let urls = data
+
+        res.status(200).json({ success: true, urls: urls });
       })
       .catch(err => {
         res.status(200).json({ success: false, error: err });
