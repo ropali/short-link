@@ -4,7 +4,7 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import overlayFactory from 'react-bootstrap-table2-overlay';
 
-import { Consumer } from '../store/context'
+import { Consumer, Context } from '../store/context'
 
 const columns = [
     {
@@ -27,7 +27,7 @@ const columns = [
 ];
 
 export default class Dashboard extends Component {
-
+    static contextType = Context
     state = {
         data: []
     }
@@ -35,23 +35,24 @@ export default class Dashboard extends Component {
     componentDidMount() {
         const url = 'api/users/dashboard'
 
-        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiI1Yzk4ZjgwY2VlMzQxZDIwYWM4NjAxZGMiLCJuYW1lIjoiUm9wYWxpIE11bnNoaSIsImVtYWlsIjoicm9wYWxpQGdtYWlsLmNvbSIsImlhdCI6MTU1NDEzMjgwOX0.W-I2bs2oWBaCWe7Er-vZeQKw3LiSQMk_AZD-ZeOIqec'
+        const context = this.context
 
-        axios.get(url, {
-            headers: {
-                Authorization: token
-            }
-        })
-            .then((response) => {
+        const userToken = context.user.token;
 
-                let urls = response.data.urls
-                urls = urls.map((url) => { return { ...url, shortUrl: axios.defaults.baseURL + '/' + url.urlCode } });
-                this.setState({ data: urls })
-
+        
+        if (userToken.length > 0) {
+            axios.get(url, {
+                headers: {
+                    Authorization: userToken
+                }
+            }).then( (res) => {
+                let urls = res.data.urls.map(url => ({ ...url, shortUrl: axios.defaults.baseURL + "/" + url.urlCode }));
+                
+                this.setState({ data: urls  })
+    
             })
-            .catch((err) => {
-                console.log(err)
-            })
+        }
+
 
     }
 
@@ -60,21 +61,17 @@ export default class Dashboard extends Component {
             <Consumer>
                 {value => {
                     const { user } = value
-
                     return (
-                        isEmpty(user) ? <h3 className="center-align">Please Login To View Dashboard...</h3> : (
-                            < BootstrapTable keyField='shortUrl'
+                        user.token.length === 0 ? <h3 className="center-align">Please Login To View Dashboard...</h3> : (
+                            < BootstrapTable keyField='url'
                                 data={this.state.data}
                                 columns={columns}
                                 bordered={true}
                                 hover={true}
-                                overlay={overlayFactory({ spinner: true, background: 'rgba(192,192,192,0.3)' })}
                             />
                         )
-
-                        
                     )
-                        
+
                 }}
             </Consumer>
         )

@@ -12,6 +12,7 @@ import Dashboard from './components/pages/Dashboard'
 import { Provider } from './components/store/context'
 
 class App extends Component {
+
   render() {
     return (
       <Provider>

@@ -18,7 +18,7 @@ class Login extends Component {
   }
 
 
-  login = (dispatch) => {
+  login = async (dispatch) => {
     const email = this.emailInputRef.state.value;
     const password = this.passwordInputRef.state.value;
 
@@ -31,7 +31,6 @@ class Login extends Component {
 
     if (typeof email != "undefined") {
       if (!validateEmail(email)) {
-        console.log('invalid email');
 
         this.setState({ errors: { email: "Invalid email address!" } })
       }
@@ -43,33 +42,23 @@ class Login extends Component {
       this.setState({ errors: { email: "Invalid email address!" } })
     }
 
-    // console.log(this.state.errors);
-
     if ((email !== "" || typeof email !== "undefined") && (password !== "" || typeof password !== "undefined")) {
+      
+      const res = await axios.post('/api/users/login', {
+        'email': email,
+        'password': password
+      })
+     
       
       dispatch({
         type: 'USER_LOGIN',
         payload: {
-          email,
-          password
+          token: res.data.data.token
         }
       })
 
       this.props.history.push('/')
 
-      // axios.post('/api/users/login', {
-      //   'email': email,
-      //   'password': password
-      // })
-      //   .then(response => {
-      //     console.log(response.data.data.token);
-
-
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-
-      //   })
     }
 
   }

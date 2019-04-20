@@ -4,11 +4,14 @@ import Icon from "react-materialize/lib/Icon";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import axios from 'axios'
 
+import { Context } from '../components/store/context'
+
 // Setup axios porxy
 axios.defaults.baseURL = "http://localhost:5000"
 // axios.defaults.baseURL = "https://shortlink-app.herokuapp.com/"
 
 const initialState = {
+  userToken: "",
   inputUrl: "",
   shorten: false,
   errors: {
@@ -19,9 +22,18 @@ const initialState = {
 };
 
 class UrlInput extends Component {
+
+  static contextType = Context
+
   constructor(props) {
     super(props);
     this.state = initialState;
+  }
+
+  componentDidMount() {
+    console.log(this.context.user);
+
+    this.setState({ ...this.state, userToken: this.context.user.token })
   }
 
   onChange = e => {
@@ -45,30 +57,35 @@ class UrlInput extends Component {
 
       axios.post('/api/short', {
         url: inputUrl
-      })
-      .then((response) => {
-        console.log(response);
-        const data = response.data
-        if (data.success == true) {
-          // Set the state
-          this.setState({ 
-            inputUrl: data.url,
-            shorten: true,
-            errors: { inputUrl: "" }
-          })
-        }
+      },
+        {
+          headers: {
+            Authorization: this.state.userToken
+          }
+        })
+        .then((response) => {
+          console.log(response);
+          const data = response.data
+          if (data.success == true) {
+            // Set the state
+            this.setState({
+              inputUrl: data.url,
+              shorten: true,
+              errors: { inputUrl: "" }
+            })
+          }
 
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-      
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
     }
-    
+
 
   };
 
-  onCopy = () => { 
+  onCopy = () => {
     this.setState({ copied: true });
     window.Materialize.toast("Copied to your clipboard!", 3000);
   };
@@ -108,10 +125,10 @@ class UrlInput extends Component {
             (shorting ? (
               <Preloader flashing size="small" />
             ) : (
-              <Button onClick={this.shortUrl} waves="light">
-                Short It!
+                <Button onClick={this.shortUrl} waves="light">
+                  Short It!
               </Button>
-            ))}
+              ))}
 
           {shorten && (
             <React.Fragment>

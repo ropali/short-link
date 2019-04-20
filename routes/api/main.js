@@ -1,17 +1,16 @@
 const express = require("express");
 const router = express.Router();
-require('dotenv').config()
+const jwt = require('jsonwebtoken')
+require("dotenv").config();
 
 const ShortUrls = require("../../models/ShortUrls");
 
 // get base URL
 const baseUrl = process.env.BASE_URL;
 
-
 router.get("/", (req, res, next) => {
-  res.json({'msg': "Welcome to Short Link!"});
+  res.json({ msg: "Welcome to Short Link!" });
 });
-
 
 /**
  * @route POST api/dashboard
@@ -20,9 +19,6 @@ router.get("/", (req, res, next) => {
  */
 // router.get("/api/dashboard/:id", (req, res, next) => {
 
-  
-
-  
 // });
 
 /**
@@ -31,57 +27,74 @@ router.get("/", (req, res, next) => {
  * @access public
  */
 router.post("/api/short", (req, res, next) => {
+  const token = req.header("Authorization");
+
+  let shortUrl;
+
   if (isEmpty(req.body)) {
     res
       .status(400)
       .json({ success: false, msg: "Data missing!", data: req.body });
   }
 
-  const shortUrl = new ShortUrls({
-    url: req.body.url,
-    userid: req.body.userid
-  });
+  if (token !== "") {
+    jwt.verify(token, process.env.SECRET_KEY, (err, payload) => {
+      if (err) {
+        res.status(200).json({ success: false, error: err.message });
+        return;
+      }
 
-  saveShortUrl(shortUrl, res)
+      shortUrl = new ShortUrls({
+        url: req.body.url,
+        userid: payload.userid
+      });
+    });
+  } else {
+    shortUrl = new ShortUrls({
+      url: req.body.url,
+      userid: ""
+    });
+  }
+
+  saveShortUrl(shortUrl, res);
+
 });
 
+router.get("/:id", (req, res, next) => {
+  const urlCode = req.params.id;
 
-router.get('/:id', (req, res, next) => {
-  const urlCode = req.params.id
-  
   ShortUrls.findOne({ urlCode: urlCode }, (err, urlObj) => {
     if (err) {
-      console.log(err)
+      console.log(err);
 
-      res.status(500).json({'success': false,'msg': 'Internal Server Error!'})
+      res.status(500).json({ success: false, msg: "Internal Server Error!" });
+      return;
     }
 
     if (isEmpty(urlObj)) {
-      res.status(404).json({'success': false,'msg': 'URL does not exist!'})
+      res.status(404).json({ success: false, msg: "URL does not exist!" });
+      return;
     }
 
     const redirectTo = urlObj.url;
 
     // Update the hits counter of url
-    ShortUrls.updateOne({ urlCode: urlCode }, { $inc: { 'hits': 1 } }, (err, model) => {
-      
-      if (err) {
-        console.log(err);
-        return;
+    ShortUrls.updateOne(
+      { urlCode: urlCode },
+      { $inc: { hits: 1 } },
+      (err, model) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        console.log(urlObj);
+
+        // Redirect to actual URL
+        res.redirect(redirectTo);
       }
-      console.log(urlObj);
-      
-      // Redirect to actual URL
-      res.redirect(redirectTo)
-
-    })
-
-    
-  })
-
-})
-
-
+    );
+  });
+});
 
 function saveShortUrl(shortUlrObj, res) {
   // Generate a random string to replace the url
@@ -93,8 +106,8 @@ function saveShortUrl(shortUlrObj, res) {
     } else if (url == null || isEmpty(url)) {
       console.log("url obj", url, randomStr);
 
-      shortUlrObj.urlCode = randomStr
-      
+      shortUlrObj.urlCode = randomStr;
+
       // Not a duplicate
       shortUlrObj.save(err => {
         if (err) {
@@ -102,15 +115,13 @@ function saveShortUrl(shortUlrObj, res) {
         }
         res.status(200).json({ success: true, url: baseUrl + randomStr });
       });
-
     } else {
       // Generate random string already exist in the DB
       // Try once again
-      saveShortUrl(shortUlrObj)
+      saveShortUrl(shortUlrObj);
     }
   });
 }
-
 
 function generateRandomString() {
   var length = 6,
