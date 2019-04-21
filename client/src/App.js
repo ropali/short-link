@@ -28,7 +28,7 @@ class App extends Component {
                 <Route exact path="/about" component={About} />
               </Switch>
             </div>
-            {/* <CustomFooter /> */}
+            <CustomFooter />
           </React.Fragment>
         </Router>
       </Provider>

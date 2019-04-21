@@ -13,7 +13,7 @@ export default function About() {
           <CardPanel style={{ color: 'white' }} className="bg-primary">
             <h3>About Short Link!</h3>
             <span>
-              Short Link is a free and open source URL shortner built using ReactJS.
+              Short Link is a free and open source URL shortner built using MERN Stack.
 
             </span>
             <h3>How it works!</h3>
