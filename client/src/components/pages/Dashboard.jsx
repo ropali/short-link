@@ -46,7 +46,7 @@ export default class Dashboard extends Component {
                     Authorization: userToken
                 }
             }).then( (res) => {
-                let urls = res.data.urls.map(url => ({ ...url, shortUrl: axios.defaults.baseURL + "/" + url.urlCode }));
+                let urls = res.data.urls.map(url => ({ ...url, shortUrl: axios.defaults.baseURL + url.urlCode }));
                 
                 this.setState({ data: urls  })
     

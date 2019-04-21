@@ -7,7 +7,7 @@ import axios from 'axios'
 import { Context } from '../components/store/context'
 
 // Setup axios porxy
-// axios.defaults.baseURL = "http://localhost:5000"
+// axios.defaults.baseURL = "http://localhost:5000/"
 axios.defaults.baseURL = "https://shortlink-app.herokuapp.com/"
 
 const initialState = {
